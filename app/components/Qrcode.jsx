@@ -1,29 +1,24 @@
-import { useRef, useEffect } from 'react';
-import QRCode from 'qrcode';
+import QRCode from "qrcode";
+import { Buffer } from 'buffer';
 
-function CodigoQR({ texto }) {
-  const canvasRef = useRef(null);
 
-  useEffect(() => {
-    // Obtenemos el contexto del canvas
-    const ctx = canvasRef.current.getContext('2d');
-    // Configuramos la librería para generar el código QR
-    const qr = new QRCode({
-      level: 'M',
-      version: 1,
-      quiet: 4,
-      mode: 'BYTE',
-      size: 200
-    });
-    // Generamos el código QR a partir del texto que se pasó como parámetro
-    qr.makeCode(texto);
-    // Dibujamos el código QR en el canvas
-    qr.renderTo2dContext(ctx, 0, 0);
-  }, [texto]);
-
-  return (
-    <canvas ref={canvasRef} width="200" height="200" />
-  );
+export default function Qrcode({ value }) {
+    // Generar el código QR
+    const qrCodeDataURL = generateQRCode(value);
+  
+    // Mostrar la imagen del código QR
+    return <p style={{width: 320, height: 300}}>{qrCodeDataURL}</p>;
 }
 
-export default CodigoQR;
+
+function generateQRCode(value) {
+    const options = {
+      width: 300,
+      height: 300,
+    };
+    let answer = QRCode.toString(value, options, function (err, string) {
+        console.log(string)
+        string
+    })
+    return answer;
+}
