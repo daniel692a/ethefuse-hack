@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MirrorWorld, ClusterEnvironment } from "@mirrorworld/web3.js"
+import '../../src/styles/globals.css';
+import Link from "next/link";
+import { sign } from "jsonwebtoken";
+import { useEffect } from "react";
 
 
 export default function Login(){
@@ -16,17 +20,34 @@ export default function Login(){
 
     async function login() {
         const { user } = await mirrorworld.login()
-        console.log(user);
+
+
+
         setUser(user)
     }
+
+    useEffect(()=>{
+        if(user){
+            const payload = {
+                id: user.id,
+                username: user.username,
+                email: user.email
+            }
+            console.log(payload);
+            const options = {
+                expiresIn: '1h',
+            }
+            let token = sign(payload, 'shhhh', options);
+            console.log(token);
+        }
+        
+    },[user])
 
     return (
         <div>
             <main>
-
                 {
-                    !user ? (<button onClick={login}>Login to Mirror World</button>) : (<p>Welcome {user?.username}</p>)
-                    
+                    !user ? (<button onClick={login}>Login to Mirror World</button>) : (<p>Welcome {user?.username}, Go to <Link href="/menu">Menu</Link></p>) 
                 }
             </main>
         </div>
