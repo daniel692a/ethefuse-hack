@@ -1,7 +1,9 @@
+import ProtectedRoute from "../components/ProtectedRoute"
+
 export default function Menu(){
     return(
-        <>
-            <h1>Holis:)</h1>
-        </>
+        <ProtectedRoute>
+            <h1>Hi</h1>
+        </ProtectedRoute>
     )
 }

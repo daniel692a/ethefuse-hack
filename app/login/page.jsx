@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { MirrorWorld, ClusterEnvironment } from "@mirrorworld/web3.js"
 
 
@@ -16,14 +16,18 @@ export default function Login(){
 
     async function login() {
         const { user } = await mirrorworld.login()
-        router.push('/menu')
+        console.log(user);
         setUser(user)
     }
 
     return (
         <div>
             <main>
-                <button onClick={login}>Login to Mirror World</button>
+
+                {
+                    !user ? (<button onClick={login}>Login to Mirror World</button>) : (<p>Welcome {user?.username}</p>)
+                    
+                }
             </main>
         </div>
     )
