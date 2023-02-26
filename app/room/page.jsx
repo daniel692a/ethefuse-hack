@@ -2,6 +2,12 @@
 
 import { useRef, useState, useEffect } from "react";
 
+import { Connection, PublicKey } from '@solana/web3.js';
+
+
+const connection = new Connection('https://api.mainnet-beta.solana.com');
+
+
 const players = [];
 let walletKey='';
 
@@ -12,9 +18,8 @@ export default function room({ userdata }){
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        players.push({username: username.current.value, wallet: walletKey});
-        setPlayers([...player, {username: username.current.value, wallet: walletKey}])
-        console.log(players)
+        players.push({username: username.current.value, wallet: walletKey.toBase58()});
+        setPlayers([...player, {username: username.current.value, wallet: walletKey.toBase58()}])
     }
 
     return(
