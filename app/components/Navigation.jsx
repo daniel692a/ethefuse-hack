@@ -29,16 +29,6 @@ export const Navigation = () => {
                             Home
                         </Link>
                     </li>
-                    <li>
-                        <Link href='/signin'>
-                            SignIn
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href='/login'>
-                            Login
-                        </Link>
-                    </li>
                 </ul> 
             </nav>
         </header>
