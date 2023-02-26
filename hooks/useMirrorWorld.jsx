@@ -1,107 +1,107 @@
-import {
-    ReactNode,
-    createContext,
-    useContext,
-    useState,
-    useEffect,
-    useRef,
-} from "react"
-import { ClusterEnvironment, IUser, MirrorWorld } from "@mirrorworld/web3.js"
+// import {
+//     ReactNode,
+//     createContext,
+//     useContext,
+//     useState,
+//     useEffect,
+//     useRef,
+// } from "react"
+// import { ClusterEnvironment, IUser, MirrorWorld } from "@mirrorworld/web3.js"
   
-// export interface IMirrorWorldContext {
-//     user?: IUser
-//     mirrorworld: MirrorWorld
-//     login(): Promise<void>
-// }
+// // export interface IMirrorWorldContext {
+// //     user?: IUser
+// //     mirrorworld: MirrorWorld
+// //     login(): Promise<void>
+// // }
 
-const MirrorWorldContext = createContext<IMirrorWorldContext>(
-    {} as IMirrorWorldContext,
-)
+// const MirrorWorldContext = createContext<IMirrorWorldContext>(
+//     {} as IMirrorWorldContext,
+// )
   
-export function useMirrorWorld() {
-    return useContext(MirrorWorldContext)
-}
+// export function useMirrorWorld() {
+//     return useContext(MirrorWorldContext)
+// }
   
-  // Create a storage key that the provider component will use
-  // to store the user's refresh_token in the client-side.
-  const storageKey = `authentication_demo_refresh_token`
+//   // Create a storage key that the provider component will use
+//   // to store the user's refresh_token in the client-side.
+//   const storageKey = `authentication_demo_refresh_token`
   
-  /**
-   *  Create a `MirrorWorldProvider` component to provide the user's
-   *  authentication logic and our SDK instance to the client
-   */
-  export const MirrorWorldProvider = ({ children }: { children: ReactNode }) => {
-    const [mirrorworld, setMirrorworld] = useState<MirrorWorld>()
-    const [user, setUser] = useState<IUser>()
-    const isInitialized = useRef(false)
+//   /**
+//    *  Create a `MirrorWorldProvider` component to provide the user's
+//    *  authentication logic and our SDK instance to the client
+//    */
+//   export const MirrorWorldProvider = ({ children }: { children: ReactNode }) => {
+//     const [mirrorworld, setMirrorworld] = useState<MirrorWorld>()
+//     const [user, setUser] = useState<IUser>()
+//     const isInitialized = useRef(false)
   
-    /**
-     * Logs in the user and updates the provider state
-     * when the user successfullly logs in
-     */
-    async function login() {
-      if (!mirrorworld) throw new Error("Mirror World SDK is not initialized")
-      const result = await mirrorworld.login()
-      if (result.user) {
-        setUser(result.user)
-        localStorage.setItem(storageKey, result.refreshToken)
-      }
-    }
+//     /**
+//      * Logs in the user and updates the provider state
+//      * when the user successfullly logs in
+//      */
+//     async function login() {
+//       if (!mirrorworld) throw new Error("Mirror World SDK is not initialized")
+//       const result = await mirrorworld.login()
+//       if (result.user) {
+//         setUser(result.user)
+//         localStorage.setItem(storageKey, result.refreshToken)
+//       }
+//     }
   
-    /**
-     * Helper function to initialize the SDK
-     * PS: Remember to replace the `apiKey` with your
-     * project's API key from the first step.
-     */
-    function initialize() {
-      const refreshToken = localStorage.getItem(storageKey)
-      const instance = new MirrorWorld({
-        apiKey: "mw_YOUR_SUPER_SECRET_API_KEY",
-        env: ClusterEnvironment.mainnet,
-        ...(refreshToken && { autoLoginCredentials: refreshToken }),
-      })
+//     /**
+//      * Helper function to initialize the SDK
+//      * PS: Remember to replace the `apiKey` with your
+//      * project's API key from the first step.
+//      */
+//     function initialize() {
+//       const refreshToken = localStorage.getItem(storageKey)
+//       const instance = new MirrorWorld({
+//         apiKey: "mw_YOUR_SUPER_SECRET_API_KEY",
+//         env: ClusterEnvironment.mainnet,
+//         ...(refreshToken && { autoLoginCredentials: refreshToken }),
+//       })
   
-      /**
-       * This event is fired every time the user logs
-       * in with the SDK in the browser. You can also listen
-       * to this event somewhere else on the app.
-       *
-       * A full list of events can be found in the API reference:
-       * https://docs.mirrorworld.fun/api-reference/js#events--js
-       */
-      instance.on("auth:refreshToken", async (refreshToken) => {
-        if (refreshToken) {
-          localStorage.setItem(storageKey, refreshToken)
-          const user = await instance.fetchUser()
-          setUser(user)
-        }
-      })
+//       /**
+//        * This event is fired every time the user logs
+//        * in with the SDK in the browser. You can also listen
+//        * to this event somewhere else on the app.
+//        *
+//        * A full list of events can be found in the API reference:
+//        * https://docs.mirrorworld.fun/api-reference/js#events--js
+//        */
+//       instance.on("auth:refreshToken", async (refreshToken) => {
+//         if (refreshToken) {
+//           localStorage.setItem(storageKey, refreshToken)
+//           const user = await instance.fetchUser()
+//           setUser(user)
+//         }
+//       })
   
-      // Set the Mirror World SDK instance
-      setMirrorworld(instance)
-    }
+//       // Set the Mirror World SDK instance
+//       setMirrorworld(instance)
+//     }
   
-    useEffect(() => {
-      if (!isInitialized.current) {
-        initialize()
-      }
+//     useEffect(() => {
+//       if (!isInitialized.current) {
+//         initialize()
+//       }
   
-      return () => {
-        isInitialized.current = true
-      }
-    }, [])
+//       return () => {
+//         isInitialized.current = true
+//       }
+//     }, [])
   
-    // Finally return the provider with the authentication
-    // logic!
-    return (
-      <MirrorWorldContext.Provider
-        value={{
-          mirrorworld: mirrorworld as MirrorWorld,
-          user,
-          login,
-        }}
-      >
-        {children}
-      </MirrorWorldContext.Provider>
-    )
-  }
+//     // Finally return the provider with the authentication
+//     // logic!
+//     return (
+//       <MirrorWorldContext.Provider
+//         value={{
+//           mirrorworld: mirrorworld as MirrorWorld,
+//           user,
+//           login,
+//         }}
+//       >
+//         {children}
+//       </MirrorWorldContext.Provider>
+//     )
+//   }
