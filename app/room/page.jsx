@@ -1,7 +1,6 @@
 'use client';
 
-import Phantom from "../components/Phantom";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const players = [];
 let walletKey='';
@@ -13,8 +12,8 @@ export default function room({ userdata }){
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
-        players.push({username: username.current.value});
-        setPlayers([...player, {username: username.current.value}])
+        players.push({username: username.current.value, wallet: walletKey});
+        setPlayers([...player, {username: username.current.value, wallet: walletKey}])
         console.log(players)
     }
 
@@ -27,6 +26,7 @@ export default function room({ userdata }){
                     <input type="text" id="first" name="first" required ref={username} />
 
                     <Phantom/>
+                    <input type="submit" id="smt" />
                 </form>
                 ) 
             }
@@ -35,18 +35,81 @@ export default function room({ userdata }){
                 (players.length===1)?(
                 <div>
                     <button onClick={(e)=>navigator.clipboard.writeText(window.location.toString())}>Invitar amigos</button>
-                    <button>Agregar Wallet del Vendedor</button>
                     <input type="number" name="deuda" id="wv" placeholder="Monto" />
+                    <button>Agregar Wallet del Vendedor</button>
                 </div>):
                 (<div></div>)
             }
             <ul>
                 {
                     players.map((user) => (
-                        <li>{user.username}</li>
+                        <li key={user.wallet}>{user.username}</li>
                     ))
                 }
             </ul>
         </>
     )
 }
+
+function Phantom(){
+    const [phantom, setPhantom] = useState(null);
+  
+    useEffect(() => {
+      if ("solana" in window) {
+        setPhantom(window["solana"]);
+      }
+    }, []);
+  
+    const [connected, setConnected] = useState(false);
+  
+    useEffect(() => {
+      phantom?.on("connect", () => {
+        setConnected(true);
+        walletKey = phantom.publicKey.toString();
+      });
+  
+      phantom?.on("disconnect", () => {
+        setConnected(false);
+      });
+    }, [phantom]);
+  
+    const connectHandler = (e) => {
+      e.preventDefault();
+      phantom?.connect();
+    };
+  
+    const disconnectHandler = () => {
+      phantom?.disconnect();
+    };
+  
+    if (phantom) {
+      if (connected) {
+        return (
+          <button
+            onClick={connectHandler}
+            disabled={true}
+          >
+            Connect to Phantom
+          </button>
+        );
+      }
+  
+      return (
+        <button
+          onClick={connectHandler}
+          >
+          Connect to Phantom
+        </button>
+      );
+    }
+  
+    return (
+      <a
+        href="https://phantom.app/"
+        target="_blank"
+        className="bg-purple-500 px-4 py-2 border border-transparent rounded-md text-base font-medium text-white"
+      >
+        Get Phantom
+      </a>
+    );
+};
