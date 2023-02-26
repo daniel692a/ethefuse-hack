@@ -1,28 +1,20 @@
 'use client';
 
-import { useRef, useState } from "react";
 import Phantom from "../components/Phantom";
+import { useRef, useState } from "react";
 
-const players = []
-const wallets = new Set();
+const players = [];
+let walletKey='';
 
 export default function room({ userdata }){
     const [player, setPlayers] = useState(players);
     const username = useRef(null);
-    const wallet = useRef(null);
+
 
     const handleOnSubmit = (e) => {
         e.preventDefault();
-
-        if(wallets.has(wallet.current.value)){
-            alert("Ya existe el wallet")
-            return null;
-        }
-
-        wallets.add(wallet.current.value);
-
-        players.push({username: username.current.value, wallet: wallet.current.value});
-        setPlayers([...player, {username: username.current.value, wallet: wallet.current.value}])
+        players.push({username: username.current.value});
+        setPlayers([...player, {username: username.current.value}])
         console.log(players)
     }
 
@@ -33,16 +25,21 @@ export default function room({ userdata }){
                 <form onSubmit={handleOnSubmit} target="">
                     <label htmlFor="first">Username</label>
                     <input type="text" id="first" name="first" required ref={username} />
-            
-                    <label htmlFor="last">Wallet</label>
-                    <input type="text" id="last" name="last" required ref={wallet} />
-            
-                    <button type="submit">Submit</button>
+
+                    <Phantom/>
                 </form>
                 ) 
             }
             <h2>Jugadores</h2>
-
+            {
+                (players.length===1)?(
+                <div>
+                    <button onClick={(e)=>navigator.clipboard.writeText(window.location.toString())}>Invitar amigos</button>
+                    <button>Agregar Wallet del Vendedor</button>
+                    <input type="number" name="deuda" id="wv" placeholder="Monto" />
+                </div>):
+                (<div></div>)
+            }
             <ul>
                 {
                     players.map((user) => (
@@ -50,7 +47,6 @@ export default function room({ userdata }){
                     ))
                 }
             </ul>
-            <Phantom/>
         </>
     )
 }

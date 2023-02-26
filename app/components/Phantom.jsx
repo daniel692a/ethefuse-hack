@@ -15,6 +15,7 @@ const Phantom = () => {
   useEffect(() => {
     phantom?.on("connect", () => {
       setConnected(true);
+      console.log(phantom.publicKey.toString());
     });
 
     phantom?.on("disconnect", () => {
@@ -34,9 +35,10 @@ const Phantom = () => {
     if (connected) {
       return (
         <button
-          onClick={disconnectHandler}
+          onClick={connectHandler}
+          disabled={true}
         >
-          Disconnect from Phantom
+          Connect to Phantom
         </button>
       );
     }
