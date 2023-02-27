@@ -29,6 +29,11 @@ export const Navigation = () => {
                             Home
                         </Link>
                     </li>
+                    <li>
+                        <Link href='/play'>
+                            Play
+                        </Link>
+                    </li>
                 </ul> 
             </nav>
         </header>
